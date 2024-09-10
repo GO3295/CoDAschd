@@ -3,8 +3,12 @@ title: "CoDA log-ratio representations for single cell RNA-seq data using CoDAsc
 output:
   html_document:
     df_print: paged
-vignette: "%\\VignetteIndexEntry{introduction} %\\VignetteEngine{knitr::rmarkdown}
-  %\\VignetteEncoding{UTF-8}\n"
+  html_notebook: default
+    
+vignette: >
+  %\VignetteIndexEntry{CoDA log-ratio representations for single cell RNA-seq data using CoDAschd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -14,9 +18,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-This tutorial introduces how to use CoDAschd package to perform CoDA log-ratio transformations for single cell RNA-seq data matrix. Besides, we demonstrated how to incorporate the CoDA transformed data with current downstream tools and analyses.
+2024.09.10
 
-2025.09.10
+This tutorial introduces how to use CoDAschd package to perform CoDA log-ratio transformations for single cell RNA-seq data matrix. Besides, we demonstrated how to incorporate the CoDA transformed data with current downstream tools and analyses.
 
 load CoDAschd package
 ```{r setup}
@@ -40,7 +44,7 @@ library(RColorBrewer)
 ```
 
 # Implementation
-## read data
+## Read data
 We used a small dataset cellbench-cellmix3 (https://doi.org/10.1038/s41592-019-0425-8 and https://doi.org/10.1186/s13059-020-02132-x) with three cell lines for demonstration.
 ```{r echo=TRUE}
 # read data
@@ -187,7 +191,7 @@ ggarrange(plotlist=dat_umap,ncol=4,nrow=2,labels="AUTO")
 ## Trajectory inference with Slingshot
 We used Slingshot as an example to perform trajectory inference with CoDA transformed scRNA-seq data
 
-### pre processing
+### Preprocessing
 ```{r echo=TRUE}
 # create list of transformed data
 dat <- list(raw_lognorm=raw_lognorm,clr_sgms=clr_sgms,clr_s10000=clr_s10000,clr_lognorm=clr_lognorm)
@@ -245,7 +249,7 @@ plotTrajectory <- function(dataset,x,ng=3){
 ```
 
 
-### run Slingshot (set end point to c("0_0_9","9_0_0"))
+### Run Slingshot (set end point to c("0_0_9","9_0_0"))
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 res1_ss <- lapply(dat,getSlingshot,metadat,endclu=c("9_0_0","0_0_9"),scaling=TRUE)
 ```
