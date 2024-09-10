@@ -3,20 +3,8 @@ title: "CoDA log-ratio representations for single cell RNA-seq data using CoDAsc
 output:
   html_document:
     df_print: paged
-    toc: true
-    toc_float: true
-    number_sections: true
-
-  html_notebook: default
-  pdf_document:
-    df_print: kable
-    toc: true
-    number_sections: true
-
-vignette: >
-  %\VignetteIndexEntry{introduction}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+vignette: "%\\VignetteIndexEntry{introduction} %\\VignetteEngine{knitr::rmarkdown}
+  %\\VignetteEncoding{UTF-8}\n"
 ---
 
 ```{r, include = FALSE}
@@ -27,6 +15,8 @@ knitr::opts_chunk$set(
 ```
 
 This tutorial introduces how to use CoDAschd package to perform CoDA log-ratio transformations for single cell RNA-seq data matrix. Besides, we demonstrated how to incorporate the CoDA transformed data with current downstream tools and analyses.
+
+2025.09.10
 
 load CoDAschd package
 ```{r setup}
