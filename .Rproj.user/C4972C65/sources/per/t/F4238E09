@@ -1,0 +1,26 @@
+{
+    "id": "F4238E09",
+    "path": "/restricted/projectnb/casa/jh50/jinghan/others/SCI/EvalCoDA/CoDAschd/R/CoDAschd.R",
+    "project_path": "R/CoDAschd.R",
+    "type": "r_source",
+    "hash": "2763421277",
+    "contents": "",
+    "dirty": false,
+    "created": 1715500361636.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "126,80",
+        "scrollLine": "115"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1715524430,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1715524430358,
+    "read_only": false,
+    "read_only_alternatives": []
+}
