@@ -188,6 +188,9 @@ dat_umap <- c(dat_umap_label,dat_umap_louvain)
 ggarrange(plotlist=dat_umap,ncol=4,nrow=2,labels="AUTO")
 ```
 
+As we use a differentiation trajectory dataset, cell types in 2-D projections are connected to each other, as expected.
+
+
 ## Trajectory inference with Slingshot
 We used Slingshot as an example to perform trajectory inference with CoDA transformed scRNA-seq data
 
@@ -267,6 +270,9 @@ for(x in names(res1_ss)){
     plotTrajectory(res1_ss,x)
 }
 ```
+
+Similarly, the analysis of CoDA transformed scRNA-seq matrix can be easily extended to other downstream applications, e.g., biomarker identification, differential expression analysis, SCENIC regulatory network.
+
 
 # Session information
 ```{r}
