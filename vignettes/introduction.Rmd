@@ -110,8 +110,39 @@ sqrt(mean((clr_lognorm-raw_lognorm)^2))
 # Example downstream analyses
 The CoDA transformed scRNA-seq matrix is easily to be incorporated with other popular downstream analyses. Here we applied two of them as examples.
 
-## Dimension reduction and Clustering
-We performed Dimension reduction and Clustering on this dataset with differentiation trajectories first, before starting conducting trajectory inference.
+## Dimension reduction-partial SVD(or Fast Truncated SVD) and Clustering
+We first performed dimension reduction using partial SVD followed by clustering on this dataset with differentiation trajectories, before starting conducting trajectory inference.
+
+Write a function for convenience
+```{r}
+getCluster <- function(x,meta,npc=10,cent=3){
+    
+    tmp <- CreateSeuratObject(counts=x,meta.data=meta,min.cells=0,min.features=0)
+    tmp <- FindVariableFeatures(tmp,nfeatures=3000,verbose=FALSE)
+    tmp <- ScaleData(tmp,verbose=FALSE)
+    tmp <- RunPCA(tmp,verbose=FALSE) # Partial SVD / Fast Truncated SVD
+    
+    # K-means
+    tmp$kmeans <- kmeans(tmp@reductions$pca@cell.embeddings[,1:npc],centers=cent)$cluster
+    # Louvain
+    tmpgraph <- buildSNNGraph(tmp@reductions$pca@cell.embeddings[,1:npc],transposed=T,k=10,d=NA)
+    res <- cluster_louvain(tmpgraph)$membership
+    cc <- aggregate(tmp@reductions$pca@cell.embeddings[,1:npc],list(res),mean)
+    cc <- as.matrix(cc[,-1])
+    hclu <- hclust(dist(cc))
+    clu <- cutree(hclu,cent)
+    clu <- clu[res]      
+    tmp$lv_clu <- clu
+    # Seurat default
+    tmp <- FindNeighbors(tmp,dims=1:npc,verbose=FALSE)
+    tmp <- FindClusters(tmp,verbose=FALSE)
+    
+    tmp <- RunUMAP(tmp,dims=1:npc,verbose=FALSE)
+    return(tmp)
+}
+```
+
+Get partial SVD, UMAP and clustering results
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # create list of transformed data
 dat <- list(raw_lognorm=raw_lognorm,clr_sgms=clr_sgms,clr_s10000=clr_s10000,clr_lognorm=clr_lognorm)
@@ -119,31 +150,8 @@ dat <- list(raw_lognorm=raw_lognorm,clr_sgms=clr_sgms,clr_s10000=clr_s10000,clr_
 # remove cells without enough information
 dat <- lapply(dat,function(x) x[,rownames(metadat)])
 
-# dimension reduction+various clustering methods
-datCluster <- list()
-for(i in 1:length(dat)){
-    tmp <- CreateSeuratObject(counts=dat[[i]],meta.data=metadat,min.cells=0,min.features=0)
-    tmp <- FindVariableFeatures(tmp,nfeatures=3000,verbose=FALSE)
-    tmp <- ScaleData(tmp,verbose=FALSE)
-    tmp <- RunPCA(tmp,verbose=FALSE) # Fast Truncated SVD and PCA
-    # K-means
-    tmp$kmeans <- kmeans(tmp@reductions$pca@cell.embeddings[,1:10],centers=3)$cluster #three cell lines
-    # Seurat default
-    tmp <- FindNeighbors(tmp,dims=1:10,verbose=FALSE)
-    tmp <- FindClusters(tmp,verbose=FALSE)
-    # Louvain
-    tmpgraph <- buildSNNGraph(tmp@reductions$pca@cell.embeddings[,1:10],transposed=T,k=10,d=NA)
-    res <- cluster_louvain(tmpgraph)$membership
-    cc <- aggregate(tmp@reductions$pca@cell.embeddings[,1:10],list(res),mean)
-    cc <- as.matrix(cc[,-1])
-    hclu <- hclust(dist(cc))
-    clu <- cutree(hclu,3)
-    clu <- clu[res]      
-    tmp$lv_clu <- clu
-    tmp <- RunUMAP(tmp,dims=1:10,verbose=FALSE)
-    datCluster[[names(dat)[i]]] <- tmp
-    rm(tmp)
-}
+# partial SVD + various clustering methods
+datCluster <- lapply(dat,getCluster,metadat)
 ```
 
 ### 2-D PCA visualize cell line labels and clusters
